@@ -24,13 +24,18 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 40px;
+    padding: 0 20px;
+}
+
 .restaurant-card {
     background: white;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    margin: 0 auto;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -288,6 +293,12 @@ h1 {
         font-size: 2rem;
     }
 
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 0 10px;
+    }
+
     .restaurant-card {
         border-radius: 15px;
     }
@@ -334,5 +345,12 @@ h1 {
     .dot.active {
         width: 10px;
         height: 10px;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
     }
 }

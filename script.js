@@ -1,104 +1,135 @@
 // Restaurant Card Functionality
 
 // ===== Image Slider Functionality =====
-let currentSlide = 0;
-let slides = [];
-let dots = [];
-let autoPlayInterval;
+const sliderInstances = [];
 const AUTO_PLAY_DELAY = 4000; // 4 seconds
 
-// Initialize slider when DOM is loaded
+// Slider class to manage individual sliders
+class ImageSlider {
+    constructor(sliderElement, index) {
+        this.sliderElement = sliderElement;
+        this.index = index;
+        this.currentSlide = 0;
+        this.slides = sliderElement.querySelectorAll('.slide');
+        this.dots = sliderElement.querySelectorAll('.dot');
+        this.autoPlayInterval = null;
+
+        this.init();
+    }
+
+    init() {
+        if (this.slides.length > 0) {
+            this.showSlide(0);
+            this.startAutoPlay();
+
+            // Pause auto-play on hover
+            this.sliderElement.addEventListener('mouseenter', () => this.stopAutoPlay());
+            this.sliderElement.addEventListener('mouseleave', () => this.startAutoPlay());
+        }
+    }
+
+    changeSlide(direction) {
+        this.currentSlide += direction;
+
+        if (this.currentSlide >= this.slides.length) {
+            this.currentSlide = 0;
+        } else if (this.currentSlide < 0) {
+            this.currentSlide = this.slides.length - 1;
+        }
+
+        this.showSlide(this.currentSlide);
+        this.resetAutoPlay();
+    }
+
+    goToSlide(index) {
+        this.currentSlide = index;
+        this.showSlide(this.currentSlide);
+        this.resetAutoPlay();
+    }
+
+    showSlide(index) {
+        // Remove active class from all slides and dots
+        this.slides.forEach(slide => slide.classList.remove('active'));
+        this.dots.forEach(dot => dot.classList.remove('active'));
+
+        // Add active class to current slide and dot
+        if (this.slides[index]) {
+            this.slides[index].classList.add('active');
+        }
+        if (this.dots[index]) {
+            this.dots[index].classList.add('active');
+        }
+    }
+
+    startAutoPlay() {
+        this.stopAutoPlay();
+        this.autoPlayInterval = setInterval(() => {
+            this.changeSlide(1);
+        }, AUTO_PLAY_DELAY);
+    }
+
+    stopAutoPlay() {
+        if (this.autoPlayInterval) {
+            clearInterval(this.autoPlayInterval);
+            this.autoPlayInterval = null;
+        }
+    }
+
+    resetAutoPlay() {
+        this.stopAutoPlay();
+        this.startAutoPlay();
+    }
+}
+
+// Initialize all sliders when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    slides = document.querySelectorAll('.slide');
-    dots = document.querySelectorAll('.dot');
+    const sliders = document.querySelectorAll('.slider');
 
-    if (slides.length > 0) {
-        showSlide(0);
-        startAutoPlay();
+    sliders.forEach((slider, index) => {
+        const sliderInstance = new ImageSlider(slider, index);
+        sliderInstances.push(sliderInstance);
 
-        // Pause auto-play on hover
-        const slider = document.querySelector('.slider');
-        slider.addEventListener('mouseenter', stopAutoPlay);
-        slider.addEventListener('mouseleave', startAutoPlay);
-    }
+        // Setup button event listeners
+        const prevBtn = slider.querySelector('.prev');
+        const nextBtn = slider.querySelector('.next');
+        const dots = slider.querySelectorAll('.dot');
 
-    // Animate card on load
-    const card = document.querySelector('.restaurant-card');
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sliderInstance.changeSlide(-1);
+            });
+        }
 
-    setTimeout(() => {
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0)';
-    }, 100);
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sliderInstance.changeSlide(1);
+            });
+        }
 
-    console.log('🍽️  Restaurant Card with Slider loaded successfully!');
-});
+        dots.forEach((dot, dotIndex) => {
+            dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                sliderInstance.goToSlide(dotIndex);
+            });
+        });
+    });
 
-// Change slide by direction (-1 for previous, 1 for next)
-function changeSlide(direction) {
-    currentSlide += direction;
+    // Animate cards on load
+    const cards = document.querySelectorAll('.restaurant-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
 
-    if (currentSlide >= slides.length) {
-        currentSlide = 0;
-    } else if (currentSlide < 0) {
-        currentSlide = slides.length - 1;
-    }
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 + (index * 150));
+    });
 
-    showSlide(currentSlide);
-    resetAutoPlay();
-}
-
-// Go to specific slide
-function goToSlide(index) {
-    currentSlide = index;
-    showSlide(currentSlide);
-    resetAutoPlay();
-}
-
-// Show the slide at given index
-function showSlide(index) {
-    // Remove active class from all slides and dots
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
-
-    // Add active class to current slide and dot
-    if (slides[index]) {
-        slides[index].classList.add('active');
-    }
-    if (dots[index]) {
-        dots[index].classList.add('active');
-    }
-}
-
-// Auto-play functionality
-function startAutoPlay() {
-    stopAutoPlay(); // Clear any existing interval
-    autoPlayInterval = setInterval(() => {
-        changeSlide(1);
-    }, AUTO_PLAY_DELAY);
-}
-
-function stopAutoPlay() {
-    if (autoPlayInterval) {
-        clearInterval(autoPlayInterval);
-        autoPlayInterval = null;
-    }
-}
-
-function resetAutoPlay() {
-    stopAutoPlay();
-    startAutoPlay();
-}
-
-// Keyboard navigation
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowLeft') {
-        changeSlide(-1);
-    } else if (e.key === 'ArrowRight') {
-        changeSlide(1);
-    }
+    console.log(`🍽️  ${sliders.length} Restaurant Cards with Sliders loaded successfully!`);
 });
 
 // ===== Restaurant Card Functions =====
