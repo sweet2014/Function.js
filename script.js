@@ -1,5 +1,108 @@
 // Restaurant Card Functionality
 
+// ===== Image Slider Functionality =====
+let currentSlide = 0;
+let slides = [];
+let dots = [];
+let autoPlayInterval;
+const AUTO_PLAY_DELAY = 4000; // 4 seconds
+
+// Initialize slider when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    slides = document.querySelectorAll('.slide');
+    dots = document.querySelectorAll('.dot');
+
+    if (slides.length > 0) {
+        showSlide(0);
+        startAutoPlay();
+
+        // Pause auto-play on hover
+        const slider = document.querySelector('.slider');
+        slider.addEventListener('mouseenter', stopAutoPlay);
+        slider.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    // Animate card on load
+    const card = document.querySelector('.restaurant-card');
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+
+    setTimeout(() => {
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    }, 100);
+
+    console.log('🍽️  Restaurant Card with Slider loaded successfully!');
+});
+
+// Change slide by direction (-1 for previous, 1 for next)
+function changeSlide(direction) {
+    currentSlide += direction;
+
+    if (currentSlide >= slides.length) {
+        currentSlide = 0;
+    } else if (currentSlide < 0) {
+        currentSlide = slides.length - 1;
+    }
+
+    showSlide(currentSlide);
+    resetAutoPlay();
+}
+
+// Go to specific slide
+function goToSlide(index) {
+    currentSlide = index;
+    showSlide(currentSlide);
+    resetAutoPlay();
+}
+
+// Show the slide at given index
+function showSlide(index) {
+    // Remove active class from all slides and dots
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+
+    // Add active class to current slide and dot
+    if (slides[index]) {
+        slides[index].classList.add('active');
+    }
+    if (dots[index]) {
+        dots[index].classList.add('active');
+    }
+}
+
+// Auto-play functionality
+function startAutoPlay() {
+    stopAutoPlay(); // Clear any existing interval
+    autoPlayInterval = setInterval(() => {
+        changeSlide(1);
+    }, AUTO_PLAY_DELAY);
+}
+
+function stopAutoPlay() {
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+    }
+}
+
+function resetAutoPlay() {
+    stopAutoPlay();
+    startAutoPlay();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+    } else if (e.key === 'ArrowRight') {
+        changeSlide(1);
+    }
+});
+
+// ===== Restaurant Card Functions =====
+
 function bookTable() {
     alert('🎉 Booking system opening!\n\nYou would be redirected to our reservation page.\n\nThank you for choosing The Gourmet Kitchen!');
 
@@ -13,23 +116,6 @@ function viewMenu() {
     // In a real application, this would open a menu page or modal:
     // window.location.href = '/menu?restaurant=gourmet-kitchen';
 }
-
-// Add smooth scroll animation
-document.addEventListener('DOMContentLoaded', function() {
-    const card = document.querySelector('.restaurant-card');
-
-    // Animate card on load
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
-
-    setTimeout(() => {
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0)';
-    }, 100);
-
-    console.log('🍽️  Restaurant Card loaded successfully!');
-});
 
 // Restaurant data object (example for future dynamic rendering)
 const restaurantData = {

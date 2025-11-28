@@ -12,7 +12,37 @@
 
         <div class="restaurant-card">
             <div class="card-image">
-                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop" alt="Restaurant interior">
+                <div class="slider">
+                    <div class="slider-wrapper">
+                        <div class="slide active">
+                            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=500&fit=crop" alt="Restaurant interior">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=500&fit=crop" alt="Fine dining table">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=500&fit=crop" alt="Delicious pasta dish">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=500&fit=crop" alt="Gourmet pizza">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1592861956120-e524fc739696?w=800&h=500&fit=crop" alt="Restaurant ambiance">
+                        </div>
+                    </div>
+
+                    <button class="slider-btn prev" onclick="changeSlide(-1)">❮</button>
+                    <button class="slider-btn next" onclick="changeSlide(1)">❯</button>
+
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(0)"></span>
+                        <span class="dot" onclick="goToSlide(1)"></span>
+                        <span class="dot" onclick="goToSlide(2)"></span>
+                        <span class="dot" onclick="goToSlide(3)"></span>
+                        <span class="dot" onclick="goToSlide(4)"></span>
+                    </div>
+                </div>
+
                 <span class="badge">Open Now</span>
             </div>
 
