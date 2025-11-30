@@ -281,3 +281,47 @@ window.addEventListener('beforeunload', () => {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { ImageSlider, sliderInstances };
 }
+
+// ===== JAVASCRIPT PRACTICE EXERCISE =====
+// Click Counter for Restaurant Names
+// This demonstrates: variables, functions, events, and DOM manipulation
+
+// Step 1: Create a variable to store click counts (object)
+let clickCounts = {};
+
+// Step 2: Create a function to handle clicks
+function handleRestaurantNameClick(event) {
+    // Get the restaurant name text
+    const restaurantName = event.target.textContent;
+
+    // If this restaurant hasn't been clicked before, set count to 0
+    if (!clickCounts[restaurantName]) {
+        clickCounts[restaurantName] = 0;
+    }
+
+    // Increase the count by 1
+    clickCounts[restaurantName]++;
+
+    // Show an alert with the count
+    alert(`You've clicked "${restaurantName}" ${clickCounts[restaurantName]} time(s)! 🎉`);
+
+    // Log to console for debugging
+    console.log('Current click counts:', clickCounts);
+}
+
+// Step 3: Add click listeners to all restaurant names
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all restaurant name elements
+    const restaurantNames = document.querySelectorAll('.restaurant-name');
+
+    // Loop through each name and add a click listener
+    restaurantNames.forEach(function(nameElement) {
+        // Make it look clickable
+        nameElement.style.cursor = 'pointer';
+
+        // Add the click event
+        nameElement.addEventListener('click', handleRestaurantNameClick);
+    });
+
+    console.log('✅ Click counters added to all restaurant names!');
+});
